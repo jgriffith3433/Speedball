@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    public GameObject rightPosition, leftPosition, deadPrefab;
+    public enum PP
+    {
+        Left,
+        Middle,
+        Right
+    }
+    public GameObject rightPosition, leftPosition, deadPrefab, middlePosition;
+    
     bool changePosition, startGame;
+    PP currentPlayerPosition;
     public float speed;
     // Start is called before the first frame update
     void Start()
@@ -17,26 +25,45 @@ public class playerScript : MonoBehaviour
     void Update()
     {
 
+
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            startGame = true;
+            currentPlayerPosition = PP.Left;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            startGame = true;
+            currentPlayerPosition = PP.Middle;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            startGame = true;
+            currentPlayerPosition = PP.Right;
+        }
+
+        if (startGame == false)
+        {
+            return;
+        }
+
         GetComponent<Rigidbody>().AddForce(Vector3.forward * speed * Time.deltaTime);
 
-        if(changePosition == true && startGame == true){
-            transform.position = Vector3.Lerp(transform.position, new Vector3(rightPosition.transform.position.x, transform.position.y, transform.position.z), 10f * Time.deltaTime);
+        if (currentPlayerPosition == PP.Left)
+        {
+            transform.position = new Vector3(leftPosition.transform.position.x, transform.position.y, transform.position.z);
         }
-        if(changePosition == false && startGame == true){
-            transform.position = Vector3.Lerp(transform.position, new Vector3(leftPosition.transform.position.x, transform.position.y, transform.position.z), 10f * Time.deltaTime);
+        if (currentPlayerPosition == PP.Middle)
+        {
+            transform.position = new Vector3(middlePosition.transform.position.x, transform.position.y, transform.position.z);
+        }
+        if (currentPlayerPosition == PP.Right)
+        {
+            transform.position = new Vector3(rightPosition.transform.position.x, transform.position.y, transform.position.z);
         }
 
-        if(Input.GetMouseButtonDown(0)){
 
-            startGame = true;
-
-            if(changePosition == false){
-                changePosition = true;
-            } else if(changePosition == true){
-                changePosition = false;
-            }
-        }
-        
     }
 
     void OnTriggerEnter(Collider other){
